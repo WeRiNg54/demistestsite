@@ -1,36 +1,34 @@
 const form = document.forms["form"];
-const button = form.elements["button"];
-
 const formArr = Array.from(form);
 const validFormArr = [];
+const button = form.elements["button"];
 
 formArr.forEach((el) => {
     if (el.hasAttribute("data-reg")) {
         el.setAttribute("is-valid", "0");
         validFormArr.push(el);
     }
-})
+});
 
 form.addEventListener("input", inputHandler);
 form.addEventListener("submit", formCheck);
 
-function inputHandler({target}) {
+function inputHandler({ target }) {
     if (target.hasAttribute("data-reg")) {
         inputCheck(target);
     }
 }
 
 function inputCheck(el) {
-    const inputValue = el.value;
+    const inputValue = el.value.trim();
     const inputReg = el.getAttribute("data-reg");
     const reg = new RegExp(inputReg);
-    if (reg.test(inputValue)){
-        el.style.border = "2px solid rgb(0, 196, 0)";
+    if (reg.test(inputValue) && inputValue !== "") {
         el.setAttribute("is-valid", "1");
-    }
-    else{
-        el.style.border = "2px solid rgb(196, 0, 0)";
+        el.style.border = "2px solid rgb(0, 196, 0)";
+    } else {
         el.setAttribute("is-valid", "0");
+        el.style.border = "2px solid rgb(255, 0, 0)";
     }
 }
 
@@ -40,10 +38,9 @@ function formCheck(e) {
     validFormArr.forEach((el) => {
         allValid.push(el.getAttribute("is-valid"));
     });
-    const isAllValid = allValid.reduce((acc, current) => {
-        return acc && current;
-    });
-    if (!Boolean(Number(isAllValid))) {
+
+    const isAllValid = allValid.every(value => value === "1");
+    if (!isAllValid) {
         alert("Заполните поля правильно!");
         return;
     }
@@ -53,9 +50,10 @@ function formCheck(e) {
 async function formSubmit() {
     const data = serializeForm(form);
     const response = await sendData(data);
+
     if (response.ok) {
         alert("Форма успешно отправлена!");
-        addNewRow(data); // Добавляем новую строку в таблицу
+        updateTable(); // Обновляем таблицу
         formReset();
     } else {
         alert("Код ошибки: " + response.status);
@@ -73,18 +71,17 @@ async function sendData(data) {
     });
 }
 
-function addNewRow(formData) {
-    // Извлекаем данные из FormData
-    const newRow = document.createElement('tr');
-    formData.forEach((value, key) => {
-        const cell = document.createElement('td');
-        cell.textContent = value;
-        newRow.appendChild(cell);
-    });
+async function updateTable() {
+    const response = await fetch('');
+    const text = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
 
-    // Находим тело таблицы и добавляем новую строку
+    const newTableBody = doc.getElementById('fileTableBody');
     const fileTableBody = document.getElementById('fileTableBody');
-    fileTableBody.appendChild(newRow);
+
+    fileTableBody.innerHTML = newTableBody.innerHTML; // Обновляем таблицу
+    document.getElementById('fileTable').style.display = 'table';
 }
 
 function formReset() {

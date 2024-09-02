@@ -1,6 +1,8 @@
 <?php
 include "config.php";
 $isSuccess = false;
+$name = $adress = $phone = $email = "";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $adress = $_POST['adress'];
@@ -14,13 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$phone) $arErrors[] = 'phone';
     if (!$email) $arErrors[] = 'email';
 
-    if (!$arErrors) {
+    if (empty($arErrors)) {
         $query = ("INSERT INTO dataform (name, adress, phone, email) VALUES ('" . $name . "','" . $adress . "','" . $phone . "','" . $email . "')");
         mysqli_query($link, $query) or die(mysqli_error($link));
         $isSuccess = true;
-        $arOptions = [];
         $name = $adress = $phone = $email = "";
-        unset($_POST);
     }
 }
 

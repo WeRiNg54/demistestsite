@@ -44,6 +44,14 @@
                 </tr>
                 </thead>
                 <tbody id="fileTableBody">
+                <?php foreach ($data as $row): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($row['name']) ?></td>
+                        <td><?= htmlspecialchars($row['adress']) ?></td>
+                        <td><?= htmlspecialchars($row['phone']) ?></td>
+                        <td><?= htmlspecialchars($row['email']) ?></td>
+                    </tr>
+                <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
