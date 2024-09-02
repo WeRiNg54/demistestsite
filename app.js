@@ -72,7 +72,7 @@ async function sendData(data) {
 }
 
 async function updateTable() {
-    const response = await fetch('');
+    const response = await fetch('feedback.php');
     const text = await response.text();
     const parser = new DOMParser();
     const doc = parser.parseFromString(text, 'text/html');
@@ -80,7 +80,7 @@ async function updateTable() {
     const newTableBody = doc.getElementById('fileTableBody');
     const fileTableBody = document.getElementById('fileTableBody');
 
-    fileTableBody.innerHTML = newTableBody.innerHTML; // Обновляем таблицу
+    fileTableBody.innerHTML = newTableBody.innerHTML;
     document.getElementById('fileTable').style.display = 'table';
 }
 
